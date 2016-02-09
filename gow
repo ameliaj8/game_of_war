@@ -21,8 +21,9 @@ begin
   game = Game.new(players)
 
   while game.remaining_players > 1
-    puts game.play
+    winner = game.play
   end
+  puts "****** WINNER: #{winner}"
 rescue => e
   handle_error(e)
 end

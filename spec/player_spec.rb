@@ -16,21 +16,34 @@ RSpec.describe Player do
   end
 
   context '#add_cards' do
+    let(:player) { Player.new('foo') }
+
     it 'adds the passed in array to the players cards array' do
-      player = Player.new('foo')
-      player.add_cards([1,2,3])
-      expect(player.cards).to eq([1,2,3])
-      player.add_cards([4,5])
-      expect(player.cards).to eq([1,2,3,4,5])
+      cards = [Card.new('A',2), Card.new('A',3), Card.new('A', 4)]
+      player.add_cards(cards)
+      expect(player.cards).to eq(cards)
+      more_cards = [Card.new('A', 5), Card.new('A', 6)]
+      player.add_cards(more_cards)
+      expect(player.cards).to eq(cards+more_cards)
+    end
+
+    it 'raises an error if not an array of Cards' do
+      expect{player.add_cards([1])}.to raise_error ('Expected an array of Cards')
     end
   end
 
   context '#play_card' do
+    let(:player) { Player.new('foo') }
+
     it 'removes the first card from the array and returns it' do
-      player = Player.new('foo')
-      player.add_cards([1,2,3])
-      expect(player.play_card).to eq(1)
-      expect(player.cards).to eq([2,3])
+      cards = [Card.new('A',2), Card.new('A',3), Card.new('A', 4)]
+      player.add_cards(cards)
+      expect(player.play_card).to eq(cards.first)
+      expect(player.cards).to eq(cards[1..2])
+    end
+
+    it 'returns nil when no cards left' do
+      expect(player.play_card).to eq(nil)
     end
   end
 end

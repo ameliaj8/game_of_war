@@ -8,6 +8,8 @@ class Card
     @rank = rank
 
     @rank_map = [2,3,4,5,6,7,8,9,10,'J','Q','K','A']
+
+    raise "Rank must be one of #{@rank_map.join(", ")}" unless @rank_map.index(@rank)
   end
 
   def to_s

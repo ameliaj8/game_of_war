@@ -10,6 +10,7 @@ class Player
   end
 
   def add_cards(cards)
+    raise 'Expected an array of Cards' if cards.detect{|c| !c.is_a?(Card)}
     @cards += cards
   end
 

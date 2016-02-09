@@ -17,6 +17,12 @@ begin
   players = ARGV.first.to_i
 
   handle_error('Number of players must be a number between 2-52') if players < 2 or players > 52
+
+  game = Game.new(players)
+
+  while game.remaining_players > 1
+    puts game.play
+  end
 rescue => e
   handle_error(e)
 end

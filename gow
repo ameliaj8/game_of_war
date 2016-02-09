@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+require_relative 'game'
+
+def handle_error(message)
+  STDERR.puts("Error: #{message}")
+  exit 1
+end
+
+if ARGV.size < 1
+  handle_error('You must specify a number of players')
+elsif ARGV.size > 1
+  handle_error('Too many arguments')
+end
+
+begin
+  players = ARGV.first.to_i
+
+  handle_error('Number of players must be a number between 2-52') if players < 2 or players > 52
+rescue => e
+  handle_error(e)
+end

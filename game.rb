@@ -2,19 +2,19 @@ require_relative 'card'
 require_relative 'player'
 
 class Game
-  attr_reader :players, :cards
+  attr_reader :players
 
   def initialize(number_of_players)
     suits = ['Diamonds', 'Spades', 'Clubs', 'Hearts']
     ranks = ['A', 'K', 'Q', 'J', 10, 9, 8, 7, 6, 5, 4, 3, 2]
-    @cards = []
+    cards = []
     suits.each do |suit|
       ranks.each do |rank|
-        @cards << Card.new(suit,rank)
+        cards << Card.new(suit,rank)
       end
     end
 
-    @cards.shuffle!
+    cards.shuffle!
 
     @players = []
     count = 1
@@ -24,15 +24,12 @@ class Game
       count += 1
     end
 
-    count = 0
-    @cards_copy = @cards.dup
-    while @cards_copy.length > 0 do
-      if count > (@players.length-1)
-        count = 0
-      end
-      @players[count].add_cards([@cards_copy.pop])
-      count += 1
+    while cards.length > 0 do
+      @players.first.add_cards([cards.pop])
+      @players.rotate!
     end
+
+    @players.sort!{|a,b| a.name <=> b.name}
   end
 
   def remaining_players
@@ -41,17 +38,17 @@ class Game
 
   def play(outputter = lambda{|r| puts r})
     outputter.call "=================PLAYING A ROUND================="
-    cards = []
+    card_pile = []
 
     winner = nil
 
     while true do
       outputter.call "PLAYERS = #{@players.map{|p| "#{p.to_s} (#{p.cards.length} cards)"}.join(", ")}"
-      cards += @players.map{|p| p.play_card} if !cards.empty? #place a card face down into pile
+      card_pile += @players.map{|p| p.play_card} if !card_pile.empty? #place a card face down into pile
       war_cards = @players.map{|p| p.play_card} #face up cards
 
       war_max_card = war_cards.max
-      cards += war_cards
+      card_pile += war_cards
 
       outputter.call "WAR CARDS = #{war_cards.map{|c| c.to_s}.join(", ")}"
       outputter.call "MAX CARD = #{war_max_card}"
@@ -65,7 +62,7 @@ class Game
         if @players[i].cards.length < 2
           #this player is out of the game and their cards go to the pile
           while @players[i].cards.length > 0
-            cards << @players[i].play_card
+            card_pile << @players[i].play_card
           end
         end
       end
@@ -87,7 +84,7 @@ class Game
     end
 
     outputter.call "WAR WINNER = #{winner}"
-    winner.add_cards(cards)
+    winner.add_cards(card_pile)
 
     @players.reject!{|p| p.cards.length == 0}
 

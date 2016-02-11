@@ -12,24 +12,7 @@ RSpec.describe Game do
       end
     end
 
-    it 'creates a deck of cards' do
-      expect(game.cards.size).to eq(52)
-
-      game.cards.each do |c|
-        expect(c).to be_instance_of(Card)
-      end
-
-      suits = ['Diamonds', 'Spades', 'Clubs', 'Hearts']
-      ranks = ['A', 'K', 'Q', 'J', 10, 9, 8, 7, 6, 5, 4, 3, 2]
-
-      suits.each do |suit|
-        ranks.each do |rank|
-          expect(game.cards).to include(Card.new(suit,rank))
-        end
-      end
-    end
-
-    it 'assigns the cards to the players in round-robin' do
+    it 'assigns cards to the players in round-robin' do
       expect(game.players[0].cards.size).to eq(18)
       expect(game.players[1].cards.size).to eq(17)
       expect(game.players[2].cards.size).to eq(17)
@@ -135,6 +118,12 @@ RSpec.describe Game do
           end
         end
       end
+    end
+
+    it 'takes an optional lambda to output results' do
+      outputter = double('outputter')
+      expect(outputter).to receive(:call).at_least(:once)
+      game.play(outputter)
     end
   end
 end

@@ -90,7 +90,7 @@ RSpec.describe Game do
       end
 
       it 'removes players with less than 2 cards remaining and adds their cards to the pile' do
-        allow(game.players.first).to receive(:cards).and_return([card3],[card3],[])
+        allow(game.players.first).to receive(:cards).and_return([card3],[card3],[card3],[])
         allow(game.players.last).to receive(:cards).and_return([card4, card5])
         expect(game.players.first).to receive(:play_card).twice.and_return(card1,card3)
         allow(game.players.last).to receive(:play_card).once.and_return(card2)
@@ -117,10 +117,10 @@ RSpec.describe Game do
       end
 
       context 'draw' do
-        it 'raises an error when there are no players with cards left' do
+        it 'returns no winner when there are no players with cards left' do
           allow(game.players.first).to receive(:cards).and_return([])
           allow(game.players.last).to receive(:cards).and_return([])
-          expect{game.play}.to raise_error("It's a tie between Player 1 & Player 2!")
+          expect(game.play).to be nil
         end
       end
 

@@ -46,7 +46,7 @@ class Game
     winner = nil
 
     while true do
-      outputter.call "PLAYERS = #{@players.map{|p| p.to_s}.join(", ")}"
+      outputter.call "PLAYERS = #{@players.map{|p| "#{p.to_s} (#{p.cards.length} cards)"}.join(", ")}"
       cards += @players.map{|p| p.play_card} if !cards.empty? #place a card face down into pile
       war_cards = @players.map{|p| p.play_card} #face up cards
 
@@ -71,7 +71,9 @@ class Game
       end
 
       if @players.select{|p| p.cards.length > 0}.size == 0 # 0 players left
-        fail "It's a tie between #{@players.map{|p| p.to_s}.join(" & ")}!"
+        outputter.call "It's a tie between #{@players.map{|p| p.to_s}.join(" & ")}!"
+        @players = []
+        return
       end
 
       @players.reject!{|p| p.cards.length == 0}

@@ -20,8 +20,10 @@ begin
 
   game = Game.new(players)
 
+  outputter = lambda {|result| puts result}
+
   while game.remaining_players > 1
-    winner = game.play
+    winner = game.play(outputter)
   end
   puts "****** WINNER: #{winner}"
 rescue => e

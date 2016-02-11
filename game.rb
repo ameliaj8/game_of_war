@@ -39,22 +39,22 @@ class Game
     @players.size
   end
 
-  def play
-    puts "=================PLAYING A ROUND================="
+  def play(outputter = lambda{|r| puts r})
+    outputter.call "=================PLAYING A ROUND================="
     cards = []
 
     winner = nil
 
     while true do
-      puts "PLAYERS = #{@players.map{|p| p.to_s}.join(", ")}"
+      outputter.call "PLAYERS = #{@players.map{|p| p.to_s}.join(", ")}"
       cards += @players.map{|p| p.play_card} if !cards.empty? #place a card face down into pile
       war_cards = @players.map{|p| p.play_card} #face up cards
 
       war_max_card = war_cards.max
       cards += war_cards
 
-      puts "WAR CARDS = #{war_cards.map{|c| c.to_s}.join(", ")}"
-      puts "MAX CARD = #{war_max_card}"
+      outputter.call "WAR CARDS = #{war_cards.map{|c| c.to_s}.join(", ")}"
+      outputter.call "MAX CARD = #{war_max_card}"
 
       if war_cards.select{|c| c == war_max_card}.size == 1
         winner = @players[war_cards.index(war_max_card)]
@@ -76,7 +76,7 @@ class Game
 
       @players.reject!{|p| p.cards.length == 0}
 
-      puts "STILL IN THE WAR #{@players.map{|p| p.to_s}.join(", ")}"
+      outputter.call "STILL IN THE WAR #{@players.map{|p| p.to_s}.join(", ")}"
 
       if @players.size == 1
         winner = @players.first
@@ -84,7 +84,7 @@ class Game
       end
     end
 
-    puts "WAR WINNER = #{winner}"
+    outputter.call "WAR WINNER = #{winner}"
     winner.add_cards(cards)
 
     @players.reject!{|p| p.cards.length == 0}
